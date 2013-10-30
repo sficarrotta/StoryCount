@@ -2,7 +2,11 @@ StoryCount
 =========================
 
 ## Overview
+This app is an example of display a count of items in a grid. Specifically, it takes all the stories, groups 
+them by project (i.e. sorts by project) then counts the stories that have a blank Description field and calcualtes
+what percentage of those stories have a blank Description.
 
+No setup is required; just add the App.html code to the Custom HTML app.
 
 ## License
 
