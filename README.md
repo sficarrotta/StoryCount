@@ -8,6 +8,11 @@ what percentage of those stories have a blank Description.
 
 No setup is required; just add the App.html code to the Custom HTML app.
 
+Screenshot
+----------
+
+![Rally Tree Grid Screenshot](https://raw.github.com/sficarrotta/StoryCount/master/deploy/StoryCount.png)
+
 ## License
 
 AppTemplate is released under the MIT license.  See the file [LICENSE](https://raw.github.com/RallyApps/AppTemplate/master/LICENSE) for the full text.
