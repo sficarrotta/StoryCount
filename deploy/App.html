@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>StoryCount</title>
+
+    <script type="text/javascript" src="/apps/2.0rc1/sdk.js"></script>
+
+    <script type="text/javascript">
+        Rally.onReady(function () {
+                var Ext=window.Ext4||window.Ext;window.console=window.console||function noop(){},Ext.define("CustomApp",{extend:"Rally.app.App",componentCls:"app",launch:function(){Ext.create("Rally.data.WsapiDataStore",{model:"UserStory",autoLoad:!0,context:{project:null},sorters:[{property:"Project",direction:"ASC"}],listeners:{load:this._onDataLoaded,scope:this}})},_onDataLoaded:function(store,data){var records=[],currentProjectCount=0,project=null,previousProject=data[0].get("Project").Name,description,totalRecords=store.getCount(),currentTotalCount=0,blankFieldCount=0;console.log("total recs: ",totalRecords),Ext.Array.each(data,function(record){currentTotalCount++,project=record.get("Project").Name,description=record.get("Description"),console.log("project: ",project),currentTotalCount==totalRecords?records.push({Description:description,Count:blankFieldCount,Project:previousProject,Percent:Math.floor(100*(blankFieldCount/currentProjectCount))}):project!=previousProject?(records.push({Description:description,Count:blankFieldCount,Project:previousProject,Percent:Math.floor(100*(blankFieldCount/currentProjectCount))}),currentProjectCount=1,previousProject=project,blankFieldCount=""===description?1:0):(currentProjectCount++,""===description&&blankFieldCount++)}),this.add({xtype:"rallygrid",store:Ext.create("Rally.data.custom.Store",{data:records,pageSize:2020}),columnCfgs:[{text:"Project",dataIndex:"Project"},{text:"# of User Stories with blank Acceptance Criteria field",dataIndex:"Count"},{text:"% of User Stories with blank Acceptance Criteria field",dataIndex:"Percent"}]})}});
+
+            Rally.launchApp('CustomApp', {
+                name:"StoryCount",
+	            parentRepos:""
+            });
+
+        });
+    </script>
+
+
+    <style type="text/css">
+        .app {
+     /* Add app styles here */
+}
+
+    </style>
+</head>
+<body></body>
+</html>

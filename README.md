@@ -1,4 +1,9 @@
 StoryCount
-==========
+=========================
 
-Shows count of stories based on a field value
+## Overview
+
+
+## License
+
+AppTemplate is released under the MIT license.  See the file [LICENSE](https://raw.github.com/RallyApps/AppTemplate/master/LICENSE) for the full text.

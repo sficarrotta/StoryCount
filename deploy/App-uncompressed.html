@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>StoryCount</title>
+
+    <script type="text/javascript" src="/apps/2.0rc1/sdk.js"></script>
+
+    <script type="text/javascript">
+        Rally.onReady(function () {
+                var Ext = window.Ext4 || window.Ext;
+window.console = window.console || (function noop() {}); // keeps IE from blowing up
+
+Ext.define('CustomApp', {
+    extend: 'Rally.app.App',
+    componentCls: 'app',
+
+    launch: function() {
+        Ext.create('Rally.data.WsapiDataStore', {
+            model: 'UserStory',
+            autoLoad: true,
+            context: {
+                project: null
+            },
+            sorters: [ // group by project for more efficient searching through the array
+                {
+                    property: 'Project',
+                    direction: 'ASC'
+                }
+            ],
+            listeners: {
+                load: this._onDataLoaded,
+                scope: this
+            }
+        });
+    },
+
+    _onDataLoaded: function(store, data) {
+        var records = [];
+        var currentProjectCount = 0; // used to count the stories in a particular project -used to calc %
+        var project = null;
+        var previousProject = data[0].get('Project').Name; //init so the very first project is set
+        var description;
+        var totalRecords = store.getCount(); // used to compare to currentTotalCount so we know when we are at the end of the array
+        var currentTotalCount = 0; // used to know when we are at the end of the array
+        var blankFieldCount = 0; // used to count how many stories have the blank field - used to calc %
+        console.log("total recs: ", totalRecords);
+        
+        Ext.Array.each(data, function(record) {
+            //Perform custom actions with the data here
+            //Calculations, etc.
+            currentTotalCount++;
+            project = record.get('Project').Name;
+            description = record.get('Description');
+            console.log("project: ", project);
+
+           if( currentTotalCount == totalRecords ) {
+               // last record in the array; close it out
+                records.push({
+                    Description: description,
+                    Count: blankFieldCount,
+                    Project: previousProject,
+                    Percent: Math.floor(blankFieldCount/currentProjectCount * 100)
+                });
+            }
+            else if ( project !=  previousProject )
+            {   // close out the numbers on this project & reset variables appropriately
+                records.push({
+                    Description: description,
+                    Count: blankFieldCount,
+                    Project: previousProject,
+                    Percent: Math.floor(blankFieldCount/currentProjectCount * 100)
+                });
+                
+                currentProjectCount = 1;
+                previousProject = project;
+                
+                if ( description === "" ) {
+                    blankFieldCount = 1;
+                }
+                else {
+                    blankFieldCount = 0;
+                }
+            }
+            else { // still on the same project
+                currentProjectCount++;  
+                if (  description === ""  ) {
+                   blankFieldCount ++;
+                }
+            }
+        });
+
+        this.add({
+            xtype: 'rallygrid',
+            store: Ext.create('Rally.data.custom.Store', {
+                data: records,
+                pageSize: 2020
+            }),
+            columnCfgs: [
+                {
+                    text: 'Project', dataIndex: 'Project'
+                },
+                {
+                    text: '# of User Stories with blank Acceptance Criteria field', dataIndex: 'Count'
+                },
+                {
+                    text: '% of User Stories with blank Acceptance Criteria field', dataIndex: 'Percent'
+                }
+            ]
+        });
+    }
+});
+
+
+            Rally.launchApp('CustomApp', {
+                name:"StoryCount",
+	            parentRepos:""
+            });
+
+        });
+    </script>
+
+
+    <style type="text/css">
+        .app {
+     /* Add app styles here */
+}
+
+    </style>
+</head>
+<body></body>
+</html>
