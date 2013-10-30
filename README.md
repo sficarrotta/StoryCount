@@ -11,7 +11,7 @@ No setup is required; just add the App.html code to the Custom HTML app.
 Screenshot
 ----------
 
-![Rally Tree Grid Screenshot](https://raw.github.com/sficarrotta/StoryCount/master/deploy/StoryCount.png)
+![Rally Tree Grid Screenshot](https://raw.github.com/sficarrotta/StoryCount/master/deploy/StoryCountScreenShot.png)
 
 ## License
 
